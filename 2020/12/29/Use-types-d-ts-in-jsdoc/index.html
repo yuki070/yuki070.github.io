@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>在js文件中使用jsdoc引用types.d.ts | yuki070&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="类型定义假设有文件@&#x2F;util&#x2F;types.d.ts，内容如下： 123456789101112131415161718192021222324252627282930313233343536373839&#x2F;** * 命名空间 *&#x2F;export namespace ns &amp;#123;  &#x2F;**   * 导出普通对象定义   *&#x2F;  export type User &#x3D; &amp;#123;    id: s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在js文件中使用jsdoc引用types.d.ts">
+<meta property="og:url" content="https://yuki070.github.io/2020/12/29/Use-types-d-ts-in-jsdoc/index.html">
+<meta property="og:site_name" content="yuki070&#39;s Blog">
+<meta property="og:description" content="类型定义假设有文件@&#x2F;util&#x2F;types.d.ts，内容如下： 123456789101112131415161718192021222324252627282930313233343536373839&#x2F;** * 命名空间 *&#x2F;export namespace ns &amp;#123;  &#x2F;**   * 导出普通对象定义   *&#x2F;  export type User &#x3D; &amp;#123;    id: s">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuki070.github.io/images/Use-types-d-ts-in-jsdoc/1.png">
+<meta property="og:image" content="https://yuki070.github.io/images/Use-types-d-ts-in-jsdoc/2.png">
+<meta property="og:image" content="https://yuki070.github.io/images/Use-types-d-ts-in-jsdoc/3.png">
+<meta property="article:published_time" content="2020-12-29T08:47:09.000Z">
+<meta property="article:modified_time" content="2020-12-29T11:13:37.425Z">
+<meta property="article:author" content="yuki070">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="jsdoc">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuki070.github.io/images/Use-types-d-ts-in-jsdoc/1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="yuki070's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">yuki070&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS 订阅"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://yuki070.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Use-types-d-ts-in-jsdoc" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/12/29/Use-types-d-ts-in-jsdoc/" class="article-date">
+  <time class="dt-published" datetime="2020-12-29T08:47:09.000Z" itemprop="datePublished">2020-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      在js文件中使用jsdoc引用types.d.ts
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="类型定义"><a href="#类型定义" class="headerlink" title="类型定义"></a>类型定义</h2><p>假设有文件@/util/types.d.ts，内容如下：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 命名空间</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">namespace</span> ns &#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 导出普通对象定义</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">type</span> User = &#123;</span><br><span class="line">    id: <span class="built_in">string</span></span><br><span class="line">    age?: <span class="built_in">number</span></span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 注册</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">type</span> register = <span class="function">(<span class="params">comp: IComponent</span>) =&gt;</span> <span class="built_in">void</span></span><br><span class="line"> </span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 组件</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">interface</span> IComponent &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 名称</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    name: <span class="built_in">string</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 类型</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">type</span>?: <span class="built_in">number</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 渲染函数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    render: <span class="function">(<span class="params">data: <span class="built_in">number</span></span>) =&gt;</span> <span class="built_in">string</span></span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">interface</span> IHoc <span class="keyword">extends</span> IComponent &#123;</span><br><span class="line">    init: <span class="function">() =&gt;</span> <span class="built_in">void</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="应用类型"><a href="#应用类型" class="headerlink" title="应用类型"></a>应用类型</h2><p><img src="/images/Use-types-d-ts-in-jsdoc/1.png" alt="使用普通对象的定义"></p>
+<p><img src="/images/Use-types-d-ts-in-jsdoc/2.png" alt="使用函数的定义"></p>
+<p><img src="/images/Use-types-d-ts-in-jsdoc/3.png" alt="使用继承后的类型"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yuki070.github.io/2020/12/29/Use-types-d-ts-in-jsdoc/" data-id="ckjatldh90005c4qxbg3r5rcy" data-title="在js文件中使用jsdoc引用types.d.ts" class="article-share-link">分享</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jsdoc/" rel="tag">jsdoc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/12/29/Use-jsdoc/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          给复杂类型添加JSDoc
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/12/24/Ice-js-vs-Umi-js/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">Ice.js vs Umi.js</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdoc/" rel="tag">jsdoc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%89%8B%E6%9E%B6/" rel="tag">脚手架</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/jsdoc/" style="font-size: 15px;">jsdoc</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 20px;">前端</a> <a href="/tags/%E8%84%9A%E6%89%8B%E6%9E%B6/" style="font-size: 10px;">脚手架</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/12/29/Use-jsdoc/">给复杂类型添加JSDoc</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/29/Use-types-d-ts-in-jsdoc/">在js文件中使用jsdoc引用types.d.ts</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/24/Ice-js-vs-Umi-js/">Ice.js vs Umi.js</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/23/Github-Open-Source-Projects/">Github开源项目观望（前端）</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/22/Hexo-configuration/">Hexo configuration</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2020 yuki070<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

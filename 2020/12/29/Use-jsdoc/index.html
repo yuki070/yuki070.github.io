@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>给复杂类型添加JSDoc | yuki070&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="背景有时候我们编写的方法，输入参数不是简单的字符串或数值，而是一个复杂的对象或对象数组。比如： 123456789101112const param &#x3D; &amp;#123;  config: &amp;#123;    header: &amp;#x27;xxxx&amp;#x27;,    body: &amp;#x27;yyyy&amp;#x27;,    height: 100,    width: 200,  &amp;#125;,  dat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="给复杂类型添加JSDoc">
+<meta property="og:url" content="https://yuki070.github.io/2020/12/29/Use-jsdoc/index.html">
+<meta property="og:site_name" content="yuki070&#39;s Blog">
+<meta property="og:description" content="背景有时候我们编写的方法，输入参数不是简单的字符串或数值，而是一个复杂的对象或对象数组。比如： 123456789101112const param &#x3D; &amp;#123;  config: &amp;#123;    header: &amp;#x27;xxxx&amp;#x27;,    body: &amp;#x27;yyyy&amp;#x27;,    height: 100,    width: 200,  &amp;#125;,  dat">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuki070.github.io/images/Use-jsdoc/1.png">
+<meta property="og:image" content="https://yuki070.github.io/images/Use-jsdoc/2.png">
+<meta property="og:image" content="https://yuki070.github.io/images/Use-jsdoc/3.png">
+<meta property="og:image" content="https://yuki070.github.io/images/Use-jsdoc/4.png">
+<meta property="og:image" content="https://yuki070.github.io/images/Use-jsdoc/5.png">
+<meta property="article:published_time" content="2020-12-29T08:54:33.000Z">
+<meta property="article:modified_time" content="2020-12-29T11:14:36.944Z">
+<meta property="article:author" content="yuki070">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="jsdoc">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuki070.github.io/images/Use-jsdoc/1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="yuki070's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">yuki070&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS 订阅"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://yuki070.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Use-jsdoc" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/12/29/Use-jsdoc/" class="article-date">
+  <time class="dt-published" datetime="2020-12-29T08:54:33.000Z" itemprop="datePublished">2020-12-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      给复杂类型添加JSDoc
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>有时候我们编写的方法，输入参数不是简单的字符串或数值，而是一个复杂的对象或对象数组。比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> param = &#123;</span><br><span class="line">  config: &#123;</span><br><span class="line">    header: <span class="string">&#x27;xxxx&#x27;</span>,</span><br><span class="line">    body: <span class="string">&#x27;yyyy&#x27;</span>,</span><br><span class="line">    height: <span class="number">100</span>,</span><br><span class="line">    width: <span class="number">200</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  data: [</span><br><span class="line">    &#123; <span class="attr">dt</span>: <span class="string">&#x27;20201105&#x27;</span>, <span class="attr">type</span>: <span class="string">&#x27;static&#x27;</span>, <span class="attr">sale</span>: <span class="number">1234</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">dt</span>: <span class="string">&#x27;20201105&#x27;</span>, <span class="attr">type</span>: <span class="string">&#x27;dynamic&#x27;</span>, <span class="attr">sale</span>: <span class="number">56780</span> &#125;,</span><br><span class="line">  ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种情况下，JSDoc可以如何写？</p>
+<h2 id="注释方式"><a href="#注释方式" class="headerlink" title="注释方式"></a>注释方式</h2><h3 id="纯JSDoc方式"><a href="#纯JSDoc方式" class="headerlink" title="纯JSDoc方式"></a>纯JSDoc方式</h3><p><img src="/images/Use-jsdoc/1.png"></p>
+<p><img src="/images/Use-jsdoc/2.png" alt="提示效果"></p>
+<h3 id="使用types-d-ts"><a href="#使用types-d-ts" class="headerlink" title="使用types.d.ts"></a>使用types.d.ts</h3><p>新增文件type.d.ts，使用typescript的语法进行类型定义，并导出。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 输入参数 */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> Param &#123;</span><br><span class="line">  <span class="comment">/** 配置参数 */</span></span><br><span class="line">  config: ParamConfig</span><br><span class="line">  <span class="comment">/** 数据 */</span></span><br><span class="line">  data: DataItem[]</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">interface</span> ParamConfig &#123;</span><br><span class="line">  <span class="comment">/** 头部信息 */</span></span><br><span class="line">  header: <span class="built_in">string</span></span><br><span class="line">  <span class="comment">/** 内容信息 */</span></span><br><span class="line">  body: <span class="built_in">string</span></span><br><span class="line">  <span class="comment">/** 高度 */</span></span><br><span class="line">  height: <span class="built_in">number</span></span><br><span class="line">  <span class="comment">/** 宽度 */</span></span><br><span class="line">  width: <span class="built_in">number</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/** 数据项 */</span></span><br><span class="line"><span class="keyword">interface</span> DataItem &#123;</span><br><span class="line">  <span class="comment">/** 日期 */</span></span><br><span class="line">  dt: <span class="built_in">string</span></span><br><span class="line">  <span class="comment">/** 类型 */</span></span><br><span class="line">  <span class="keyword">type</span>: DataType</span><br><span class="line">  <span class="comment">/** 销售额 */</span></span><br><span class="line">  sale: <span class="built_in">number</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/** 数据类型 */</span></span><br><span class="line"><span class="built_in">enum</span> DataType &#123;</span><br><span class="line">  <span class="comment">/** 静态 */</span></span><br><span class="line">  <span class="keyword">static</span> = <span class="string">&#x27;static&#x27;</span>,</span><br><span class="line">  <span class="comment">/** 动态 */</span></span><br><span class="line">  dynamic = <span class="string">&#x27;dynamic&#x27;</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/Use-jsdoc/3.png"></p>
+<p>这种方式也可以引入第三方包的types定义。如：</p>
+<p><img src="/images/Use-jsdoc/4.png"></p>
+<p><img src="/images/Use-jsdoc/5.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://yuki070.github.io/2020/12/29/Use-jsdoc/" data-id="ckjatldh60004c4qx0n1ldb1r" data-title="给复杂类型添加JSDoc" class="article-share-link">分享</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jsdoc/" rel="tag">jsdoc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/12/29/Use-types-d-ts-in-jsdoc/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">在js文件中使用jsdoc引用types.d.ts</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/" rel="tag">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsdoc/" rel="tag">jsdoc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag">前端</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%84%9A%E6%89%8B%E6%9E%B6/" rel="tag">脚手架</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/jsdoc/" style="font-size: 15px;">jsdoc</a> <a href="/tags/%E5%89%8D%E7%AB%AF/" style="font-size: 20px;">前端</a> <a href="/tags/%E8%84%9A%E6%89%8B%E6%9E%B6/" style="font-size: 10px;">脚手架</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/12/29/Use-jsdoc/">给复杂类型添加JSDoc</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/29/Use-types-d-ts-in-jsdoc/">在js文件中使用jsdoc引用types.d.ts</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/24/Ice-js-vs-Umi-js/">Ice.js vs Umi.js</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/23/Github-Open-Source-Projects/">Github开源项目观望（前端）</a>
+          </li>
+        
+          <li>
+            <a href="/2020/12/22/Hexo-configuration/">Hexo configuration</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2020 yuki070<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
